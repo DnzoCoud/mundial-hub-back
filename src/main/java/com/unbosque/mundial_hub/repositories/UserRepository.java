@@ -1,0 +1,11 @@
+package com.unbosque.mundial_hub.repositories;
+
+import com.unbosque.mundial_hub.models.UserEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<UserEntity, UUID> {
+    Optional<UserEntity> findByEmail(String email);
+    boolean existsByEmail(String email);
+}
