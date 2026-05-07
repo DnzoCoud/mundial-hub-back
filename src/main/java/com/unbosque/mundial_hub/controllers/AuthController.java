@@ -1,51 +1,34 @@
 package com.unbosque.mundial_hub.controllers;
 
-import com.unbosque.mundial_hub.dto.LoginRequestDTO;
-import com.unbosque.mundial_hub.dto.LoginResponseDTO;
-import com.unbosque.mundial_hub.dto.RegisterRequestDTO;
-import com.unbosque.mundial_hub.dto.RegisterResponseDTO;
+import com.unbosque.mundial_hub.dto.request.LoginRequestDTO;
+import com.unbosque.mundial_hub.dto.response.LoginResponseDTO;
+import com.unbosque.mundial_hub.dto.request.RegisterRequestDTO;
+import com.unbosque.mundial_hub.dto.response.RegisterResponseDTO;
+import com.unbosque.mundial_hub.handlers.ApiResponse;
 import com.unbosque.mundial_hub.services.AuthService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class AuthController {
+    private final AuthService authService;
 
-    @Autowired
-    private AuthService authService;
-
-    // Registro (HU-01)
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request,
-                                                        BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMessage = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Datos inválidos");
-            return ResponseEntity.badRequest().body(new RegisterResponseDTO(errorMessage, false));
-        }
-        String result = authService.register(request);
-        boolean success = result.equals("Usuario registrado exitosamente");
-        return ResponseEntity.ok(new RegisterResponseDTO(result, success));
+    public ResponseEntity<ApiResponse<?>> register(@Valid @RequestBody RegisterRequestDTO request) {
+        var result = authService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(result));
     }
 
-    // Login (HU-02)
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request,
-                                                  BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String errorMsg = bindingResult.getFieldErrors().stream()
-                    .map(error -> error.getDefaultMessage())
-                    .findFirst()
-                    .orElse("Datos inválidos");
-            return ResponseEntity.badRequest().body(new LoginResponseDTO(null, false, errorMsg, null));
-        }
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
+
         LoginResponseDTO response = authService.login(request.getEmail(), request.getPassword());
         if (response.isSuccess()) {
             return ResponseEntity.ok(response);

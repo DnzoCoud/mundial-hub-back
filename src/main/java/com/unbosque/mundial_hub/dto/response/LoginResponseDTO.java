@@ -1,4 +1,4 @@
-package com.unbosque.mundial_hub.dto;
+package com.unbosque.mundial_hub.dto.response;
 
 public class LoginResponseDTO {
     private String token;

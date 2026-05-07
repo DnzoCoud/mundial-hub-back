@@ -1,4 +1,4 @@
-package com.unbosque.mundial_hub.dto;
+package com.unbosque.mundial_hub.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

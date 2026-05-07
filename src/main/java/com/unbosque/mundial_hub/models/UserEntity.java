@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -32,7 +32,7 @@ public class UserEntity {
 
     private String password;
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     @OneToOne(mappedBy = "user")
     private UserProfileEntity profile;

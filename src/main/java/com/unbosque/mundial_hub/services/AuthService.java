@@ -1,74 +1,71 @@
 package com.unbosque.mundial_hub.services;
 
-import com.unbosque.mundial_hub.dto.LoginRequestDTO;
-import com.unbosque.mundial_hub.dto.LoginResponseDTO;
-import com.unbosque.mundial_hub.dto.RegisterRequestDTO;
+import com.unbosque.mundial_hub.dto.domain.UserDto;
+import com.unbosque.mundial_hub.dto.response.LoginResponseDTO;
+import com.unbosque.mundial_hub.dto.request.RegisterRequestDTO;
+import com.unbosque.mundial_hub.exceptions.AlreadyExistsException;
+import com.unbosque.mundial_hub.exceptions.DomainException;
+import com.unbosque.mundial_hub.exceptions.NotFoundException;
+import com.unbosque.mundial_hub.mappers.UserMapper;
+import com.unbosque.mundial_hub.models.EntityStatus;
 import com.unbosque.mundial_hub.models.UserEntity;
 import com.unbosque.mundial_hub.models.UserProfileEntity;
 import com.unbosque.mundial_hub.repositories.UserProfileRepository;
 import com.unbosque.mundial_hub.repositories.UserRepository;
 import com.unbosque.mundial_hub.utilities.SimplePasswordEncoder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
+    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserProfileRepository userProfileRepository;
-
-    // Registro (HU-01)
     @Transactional
-    public String register(RegisterRequestDTO request) {
-        // Validar contraseñas coincidentes
+    public UserDto register(RegisterRequestDTO request) {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
-            return "Las contraseñas no coinciden";
-        }
-        // Validar email único
-        if (userRepository.existsByEmail(request.getEmail())) {
-            return "El correo ya está registrado";
+            throw new DomainException("Passwords don't match");
         }
 
-        // Crear entidad User
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new AlreadyExistsException("Email already exists");
+        }
+
         UserEntity user = new UserEntity();
         user.setEmail(request.getEmail());
-        user.setName(request.getFullName());          // nombre completo también en User.name
-        user.setPassword(SimplePasswordEncoder.encode(request.getPassword()));
-        user.setStatus("ACTIVE");
-        user.setCreatedAt(LocalDateTime.now());
+        user.setName(request.getFullName());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setStatus(EntityStatus.ACTIVE.toString());
+        user.setCreatedAt(LocalDate.now());
         user = userRepository.save(user);
 
-        // Crear perfil asociado
         UserProfileEntity profile = new UserProfileEntity();
         profile.setUser(user);
         profile.setFullName(request.getFullName());
-        // Los demás campos (birthDate, city, country, avatarUrl) se dejan nulos por ahora
         userProfileRepository.save(profile);
 
-        // (Opcional) La agenda personal se creará en HU-07
-
-        return "Usuario registrado exitosamente";
+        return this.userMapper.toDto(user);
     }
 
-    // Login (HU-02) - versión simplificada sin JWT
     public LoginResponseDTO login(String email, String rawPassword) {
         UserEntity user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
-            return new LoginResponseDTO(null, false,
-                    "No encontramos una cuenta con ese correo. ¿Deseas registrarte?", null);
+            throw new NotFoundException("User not found");
         }
-        if (!SimplePasswordEncoder.matches(rawPassword, user.getPassword())) {
-            return new LoginResponseDTO(null, false, "Correo o contraseña incorrectos", null);
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new DomainException("Passwords don't match");
         }
 
-        // Generar token simulado (reemplazar después con JWT real)
         String fakeToken = "fake-jwt-token-" + UUID.randomUUID().toString();
         String fullName = (user.getProfile() != null && user.getProfile().getFullName() != null)
                 ? user.getProfile().getFullName()
