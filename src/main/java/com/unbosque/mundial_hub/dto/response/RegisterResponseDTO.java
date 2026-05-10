@@ -1,4 +1,4 @@
-package com.unbosque.mundial_hub.dto;
+package com.unbosque.mundial_hub.dto.response;
 
 public class RegisterResponseDTO {
     private String message;
