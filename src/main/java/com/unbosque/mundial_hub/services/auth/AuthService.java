@@ -11,6 +11,7 @@ import com.unbosque.mundial_hub.mappers.UserMapper;
 import com.unbosque.mundial_hub.models.EntityStatus;
 import com.unbosque.mundial_hub.models.UserEntity;
 import com.unbosque.mundial_hub.models.UserProfileEntity;
+import com.unbosque.mundial_hub.models.UserRole;
 import com.unbosque.mundial_hub.repositories.UserProfileRepository;
 import com.unbosque.mundial_hub.repositories.UserRepository;
 import com.unbosque.mundial_hub.utilities.TokenTypes;
@@ -46,6 +47,7 @@ public class AuthService {
         user.setName(request.getFullName());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(EntityStatus.ACTIVE.toString());
+        user.setRole(UserRole.FAN);
         user.setCreatedAt(LocalDate.now());
         user = userRepository.save(user);
 
