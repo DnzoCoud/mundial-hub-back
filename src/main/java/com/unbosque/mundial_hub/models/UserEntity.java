@@ -34,6 +34,10 @@ public class UserEntity {
 
     private LocalDate createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
+
     @OneToOne(mappedBy = "user")
     private UserProfileEntity profile;
 }

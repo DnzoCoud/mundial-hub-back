@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -12,5 +13,5 @@ import java.util.List;
 public class ApiError {
     private final String code;
     private final String message;
-    private final List<String> details;
+    private final Map<String, String> details;
 }

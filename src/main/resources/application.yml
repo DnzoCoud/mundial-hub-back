@@ -33,3 +33,5 @@ management:
 server:
   port: 8080
 
+jwt:
+  secret: ${JWT_SECRET}
