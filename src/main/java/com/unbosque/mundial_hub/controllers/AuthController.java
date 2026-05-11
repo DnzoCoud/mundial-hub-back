@@ -3,14 +3,12 @@ package com.unbosque.mundial_hub.controllers;
 import com.unbosque.mundial_hub.dto.request.LoginRequestDTO;
 import com.unbosque.mundial_hub.dto.response.LoginResponseDTO;
 import com.unbosque.mundial_hub.dto.request.RegisterRequestDTO;
-import com.unbosque.mundial_hub.dto.response.RegisterResponseDTO;
 import com.unbosque.mundial_hub.handlers.ApiResponse;
-import com.unbosque.mundial_hub.services.AuthService;
+import com.unbosque.mundial_hub.services.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,13 +25,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
-
+    public ResponseEntity<ApiResponse<?>> login(@Valid @RequestBody LoginRequestDTO request) {
         LoginResponseDTO response = authService.login(request.getEmail(), request.getPassword());
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(401).body(response);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
 }

@@ -68,6 +68,11 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt:0.2'
+	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+	// Source: https://mvnrepository.com/artifact/com.auth0/java-jwt
+	implementation 'com.auth0:java-jwt:4.5.2'
 }
 
 tasks.named('test') {

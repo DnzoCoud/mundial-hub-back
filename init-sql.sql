@@ -5,6 +5,7 @@ CREATE TABLE users (
    name TEXT NOT NULL,
    email TEXT UNIQUE NOT NULL,
    password TEXT NOT NULL,
+   role TEXT NOT NULL,
    status TEXT NOT NULL,
    created_at TIMESTAMPTZ DEFAULT now()
 );
@@ -39,15 +40,38 @@ CREATE TABLE "group" (
 CREATE TABLE user_group (
     user_id UUID,
     group_id UUID,
+    role TEXT NOT NULL,
+    joined_at TIMESTAMPTZ DEFAULT now(),
     PRIMARY KEY (user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (group_id) REFERENCES "group"(id) ON DELETE CASCADE
+    FOREIGN KEY (group_id) REFERENCES "group"(id) ON DELETE CASCADE,
+    UNIQUE(user_id, group_id)
 );
 
 CREATE TABLE pool (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       group_id UUID,
+      name TEXT NOT NULL,
+      description TEXT,
+      code TEXT UNIQUE NOT NULL,
+      max_members INT,
+      is_private BOOLEAN DEFAULT false,
+      status TEXT NOT NULL DEFAULT 'ACTIVE',
+      starts_at TIMESTAMPTZ,
+      ends_at TIMESTAMPTZ,
       FOREIGN KEY (group_id) REFERENCES "group"(id)
+);
+
+CREATE TABLE user_pool (
+     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     pool_id UUID NOT NULL,
+     user_id UUID NOT NULL,
+     role TEXT NOT NULL,
+     joined_at TIMESTAMPTZ DEFAULT now(),
+
+     FOREIGN KEY (pool_id) REFERENCES pool(id) ON DELETE CASCADE,
+     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+     UNIQUE(pool_id, user_id)
 );
 
 CREATE TABLE ranking (
@@ -312,3 +336,34 @@ CREATE TABLE auditable_event (
      FOREIGN KEY (refund_id) REFERENCES refund(id),
      FOREIGN KEY (reservation_id) REFERENCES reservation(id)
 );
+
+CREATE TYPE user_role AS ENUM (
+    'FAN',
+    'OPERATOR',
+    'SUPPORT',
+    'COMPLIANCE',
+    'ADMIN'
+);
+
+CREATE TYPE group_role AS ENUM (
+    'OWNER',
+    'ADMIN',
+    'MEMBER'
+);
+
+CREATE TYPE pool_role AS ENUM (
+    'ADMIN',
+    'PLAYER'
+);
+
+ALTER TABLE users
+ALTER COLUMN role TYPE user_role
+USING role::user_role;
+
+ALTER TABLE user_group
+ALTER COLUMN role TYPE group_role
+USING role::group_role;
+
+ALTER TABLE user_pool
+ALTER COLUMN role TYPE pool_role
+USING role::pool_role;
