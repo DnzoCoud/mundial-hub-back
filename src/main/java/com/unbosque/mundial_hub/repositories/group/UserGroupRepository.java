@@ -1,6 +1,7 @@
 package com.unbosque.mundial_hub.repositories.group;
 
 import com.unbosque.mundial_hub.models.GroupEntity;
+import com.unbosque.mundial_hub.models.UserEntity;
 import com.unbosque.mundial_hub.models.UserGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +26,10 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, UUID> {
             UUID userId,
             UUID groupId
     );
+
+    Optional<Object> findByUser_IdAndGroup_Id(UUID userId, UUID groupId);
+
+    Optional<Object> findByUser_IdAndGroup_Id(UUID userId, UUID groupId);
+
+    UUID user(UserEntity user);
 }

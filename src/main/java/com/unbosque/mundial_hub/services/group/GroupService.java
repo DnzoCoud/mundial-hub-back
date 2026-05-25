@@ -35,6 +35,7 @@ public class GroupService {
     private final InviteTokenService inviteTokenService;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public List<GroupDto> findAll(UUID ownerId) {
         return groupRepository.findAllWithUsers(ownerId)
                 .stream()
@@ -42,6 +43,7 @@ public class GroupService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public GroupDto findById(UUID id) {
         GroupEntity group = groupRepository.findByIdWithUsers(id)
                 .orElseThrow(() -> new NotFoundException("Group not found"));
@@ -225,6 +227,52 @@ public class GroupService {
         group.getUsers().add(relation);
 
         return groupMapper.toDto(group);
+    }
+
+    @Transactional
+    public void leaveGroup(UUID groupId, UUID userId) {
+        UserGroup relation = (UserGroup) userGroupRepository
+                .findByUser_IdAndGroup_Id(userId, groupId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "User does not belong to this group"
+                        )
+                );
+
+        if (relation.getRole() == GroupRole.OWNER) {
+            throw new IllegalArgumentException(
+                    "Owner cannot leave the group"
+            );
+        }
+
+        userGroupRepository.delete(relation);
+    }
+
+
+    @Transactional
+    public void deleteGroup(
+            UUID groupId,
+            UUID userId
+    ) {
+
+        UserGroup relation = (UserGroup) userGroupRepository
+                .findByUser_IdAndGroup_Id(
+                        userId,
+                        groupId
+                )
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "User does not belong to this group"
+                        )
+                );
+
+        if (relation.getRole() != GroupRole.OWNER) {
+            throw new IllegalArgumentException(
+                    "Only owner can delete the group"
+            );
+        }
+
+        groupRepository.deleteById(groupId);
     }
 
     private void validateAssignableRole(GroupRole role) {

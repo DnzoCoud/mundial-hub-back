@@ -92,4 +92,30 @@ public class GroupController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok(response));
     }
+
+    @PatchMapping("/{groupId}/leave")
+    public ResponseEntity<Void> exitGroup(
+            @PathVariable UUID groupId,
+            @AuthenticationPrincipal
+            CustomUserPrincipal user
+    ) {
+        groupService.leaveGroup(groupId, user.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("""
+        @groupService.hasOwnerOrAdminRole(
+            #groupId,
+            principal.getId()
+        )
+    """)
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<Void> deleteGroup(
+            @PathVariable UUID groupId,
+            @AuthenticationPrincipal
+            CustomUserPrincipal user
+    ) {
+        groupService.deleteGroup(groupId, user.getId());
+        return ResponseEntity.noContent().build();
+    }
 }
