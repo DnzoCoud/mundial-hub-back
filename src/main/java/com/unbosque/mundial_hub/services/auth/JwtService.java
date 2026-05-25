@@ -24,7 +24,8 @@ public class JwtService {
 
     public String generateToken(UserEntity user) throws IllegalArgumentException, JWTCreationException {
         return JWT.create()
-                .withSubject(user.getEmail())
+                .withSubject(user.getId().toString())
+                .withClaim("email", user.getEmail())
                 .withClaim("role", user.getRole().name())
                 .withIssuedAt(new Date())
                 .withIssuer("MUNDIAL-HUB APPLICATION")
@@ -37,6 +38,6 @@ public class JwtService {
                 .withIssuer("MUNDIAL-HUB APPLICATION")
                 .build();
         DecodedJWT jwt = verifier.verify(token);
-        return jwt.getSubject();
+        return jwt.getClaim("email").asString();
     }
 }

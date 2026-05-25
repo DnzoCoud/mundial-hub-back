@@ -367,3 +367,18 @@ USING role::group_role;
 ALTER TABLE user_pool
 ALTER COLUMN role TYPE pool_role
 USING role::pool_role;
+
+ALTER TABLE "group"
+    ADD COLUMN invite_token VARCHAR(100) NULL;
+
+ALTER TABLE "group"
+    ADD CONSTRAINT uq_invite_token UNIQUE (invite_token);
+
+ALTER TABLE "group"
+    RENAME TO groups;
+
+ALTER TABLE user_group
+    DROP CONSTRAINT "user_group_pkey";
+
+ALTER TABLE user_group
+    ADD COLUMN id UUID DEFAULT gen_random_uuid() PRIMARY KEY;

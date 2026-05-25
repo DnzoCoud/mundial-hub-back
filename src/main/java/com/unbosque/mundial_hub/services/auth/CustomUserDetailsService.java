@@ -1,5 +1,6 @@
 package com.unbosque.mundial_hub.services.auth;
 
+import com.unbosque.mundial_hub.dto.response.auth.CustomUserPrincipal;
 import com.unbosque.mundial_hub.models.UserEntity;
 import com.unbosque.mundial_hub.repositories.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +15,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public CustomUserPrincipal loadUserByUsername(String email)
+            throws UsernameNotFoundException {
 
-        return org.springframework.security.core.userdetails.User
-                .builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .authorities("ROLE_" + user.getRole().name())
-                .build();
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found")
+                );
+
+        return new CustomUserPrincipal(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole()
+        );
     }
 }

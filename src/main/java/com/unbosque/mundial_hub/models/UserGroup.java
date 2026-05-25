@@ -32,11 +32,11 @@ public class UserGroup {
     private GroupRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_group")
+    @JoinColumn(name = "group_id")
     private GroupEntity group;
 
     @Column(name = "joined_at")

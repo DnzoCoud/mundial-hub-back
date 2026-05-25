@@ -1,5 +1,6 @@
 package com.unbosque.mundial_hub.services.auth;
 
+import com.unbosque.mundial_hub.dto.response.auth.CustomUserPrincipal;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (userEmail == null || userEmail.isEmpty()) return;
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+            CustomUserPrincipal userDetails = customUserDetailsService.loadUserByUsername(userEmail);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.getAuthorities()

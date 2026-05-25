@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -19,8 +21,8 @@ public class UserProfileController {
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserProfileDto>> getMyProfile(Authentication authentication) {
-        String email = authentication.getName();
-        UserProfileDto profile = userProfileService.getProfileByEmail(email);
+        String userEmail = authentication.getName();
+        UserProfileDto profile = userProfileService.getProfileByEmail(userEmail);
         return ResponseEntity.ok(ApiResponse.ok(profile));
     }
 
@@ -29,8 +31,8 @@ public class UserProfileController {
             Authentication authentication,
             @Valid @RequestBody UpdateProfileRequest request
     ) {
-        String email = authentication.getName();
-        UserProfileDto updated = userProfileService.updateProfile(email, request);
+        String userEmail = authentication.getName();
+        UserProfileDto updated = userProfileService.updateProfile(userEmail, request);
         return ResponseEntity.ok(ApiResponse.ok(updated));
     }
 }

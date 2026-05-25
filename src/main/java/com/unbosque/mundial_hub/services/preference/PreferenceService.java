@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,8 +24,8 @@ public class PreferenceService {
     private final PreferenceRepository preferenceRepository;
 
     @Transactional(readOnly = true)
-    public UserPreferencesResponse getPreferences(String email) {
-        UserEntity user = userRepository.findByEmail(email)
+    public UserPreferencesResponse getPreferences(UUID id) {
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
         List<PreferenceEntity> preferences = preferenceRepository.findByUser(user);
@@ -51,8 +52,8 @@ public class PreferenceService {
     }
 
     @Transactional
-    public UserPreferencesResponse updatePreferences(String email, UpdatePreferencesRequest request) {
-        UserEntity user = userRepository.findByEmail(email)
+    public UserPreferencesResponse updatePreferences(UUID id, UpdatePreferencesRequest request) {
+        UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
         // Eliminar preferencias existentes del usuario
@@ -64,7 +65,7 @@ public class PreferenceService {
         savePreferences(user, request.getFavoriteStadiums(), "FAVORITE_STADIUM");
 
         // Retornar las preferencias guardadas
-        return getPreferences(email);
+        return getPreferences(user.getId());
     }
 
     private void savePreferences(UserEntity user, List<String> values, String category) {
@@ -74,7 +75,7 @@ public class PreferenceService {
         // Filtrar valores vacíos o nulos
         List<String> validValues = values.stream()
                 .filter(v -> v != null && !v.trim().isEmpty())
-                .collect(Collectors.toList());
+                .toList();
 
         for (String value : validValues) {
             PreferenceEntity pref = new PreferenceEntity();

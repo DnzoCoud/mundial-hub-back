@@ -43,5 +43,9 @@ server:
 jwt:
   secret: ${JWT_SECRET}
 
+app:
+  invite:
+    secret: super-secret-token
+
 external-api-keys:
   api-football: ${FOOTBALL_API_KEY}

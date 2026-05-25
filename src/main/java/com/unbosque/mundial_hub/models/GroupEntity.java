@@ -26,6 +26,9 @@ public class GroupEntity extends BaseEntity {
     private UUID id;
     private String name;
 
+    @Column(unique = true, length = 100, nullable = true)
+    private String inviteToken;
+
     @OneToMany(mappedBy = "group")
     private List<UserGroup> users;
 }
