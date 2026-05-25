@@ -1,7 +1,7 @@
 package com.unbosque.mundial_hub.services.auth;
 
 import com.unbosque.mundial_hub.models.UserEntity;
-import com.unbosque.mundial_hub.repositories.UserRepository;
+import com.unbosque.mundial_hub.repositories.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

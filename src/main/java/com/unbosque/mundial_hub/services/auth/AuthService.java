@@ -1,19 +1,18 @@
 package com.unbosque.mundial_hub.services.auth;
 
-import com.unbosque.mundial_hub.dto.domain.UserDto;
-import com.unbosque.mundial_hub.dto.response.LoginResponseDTO;
-import com.unbosque.mundial_hub.dto.request.RegisterRequestDTO;
+import com.unbosque.mundial_hub.dto.domain.user.UserDto;
+import com.unbosque.mundial_hub.dto.response.auth.LoginResponseDTO;
+import com.unbosque.mundial_hub.dto.request.auth.RegisterRequestDTO;
 import com.unbosque.mundial_hub.exceptions.AlreadyExistsException;
 import com.unbosque.mundial_hub.exceptions.BadAuthenticationException;
 import com.unbosque.mundial_hub.exceptions.DomainException;
-import com.unbosque.mundial_hub.exceptions.NotFoundException;
-import com.unbosque.mundial_hub.mappers.UserMapper;
-import com.unbosque.mundial_hub.models.EntityStatus;
+import com.unbosque.mundial_hub.mappers.user.UserMapper;
+import com.unbosque.mundial_hub.models.enums.EntityStatus;
 import com.unbosque.mundial_hub.models.UserEntity;
 import com.unbosque.mundial_hub.models.UserProfileEntity;
-import com.unbosque.mundial_hub.models.UserRole;
-import com.unbosque.mundial_hub.repositories.UserProfileRepository;
-import com.unbosque.mundial_hub.repositories.UserRepository;
+import com.unbosque.mundial_hub.models.enums.UserRole;
+import com.unbosque.mundial_hub.repositories.user.UserProfileRepository;
+import com.unbosque.mundial_hub.repositories.user.UserRepository;
 import com.unbosque.mundial_hub.utilities.TokenTypes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

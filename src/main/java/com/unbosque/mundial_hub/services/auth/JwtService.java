@@ -6,16 +6,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.unbosque.mundial_hub.beans.JwtConfig;
+import com.unbosque.mundial_hub.config.JwtConfig;
 import com.unbosque.mundial_hub.models.UserEntity;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.io.Decoders;
 
-import java.security.Key;
 import java.util.Date;
 
 @Component
