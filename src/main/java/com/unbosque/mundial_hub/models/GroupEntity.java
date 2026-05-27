@@ -26,9 +26,12 @@ public class GroupEntity extends BaseEntity {
     private UUID id;
     private String name;
 
-    @Column(unique = true, length = 100, nullable = true)
+    @Column(unique = true, length = 100)
     private String inviteToken;
 
     @OneToMany(mappedBy = "group")
     private List<UserGroup> users;
+
+    @OneToMany(mappedBy = "group")
+    private List<PoolEntity> pools;
 }
