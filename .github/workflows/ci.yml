@@ -1,4 +1,4 @@
-run-name: App CI
+name: App CI - Build
 on:
     push:
         branches:
