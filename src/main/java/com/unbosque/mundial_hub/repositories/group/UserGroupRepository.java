@@ -29,7 +29,5 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, UUID> {
 
     Optional<Object> findByUser_IdAndGroup_Id(UUID userId, UUID groupId);
 
-    Optional<Object> findByUser_IdAndGroup_Id(UUID userId, UUID groupId);
-
     UUID user(UserEntity user);
 }
