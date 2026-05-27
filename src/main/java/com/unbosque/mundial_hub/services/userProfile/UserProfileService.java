@@ -47,9 +47,11 @@ public class UserProfileService {
         }
 
         // Actualizar campos permitidos
+        // Actualizar campos permitidos
         profile.setFullName(request.getFullName());
         profile.setBirthDate(request.getBirthDate());
         profile.setCountry(request.getCountry());
+        profile.setCity(request.getCity());        
         profile.setAvatarUrl(request.getAvatarUrl());
 
         userProfileRepository.save(profile);

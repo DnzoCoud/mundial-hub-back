@@ -18,17 +18,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UpdateProfileRequest {
     
-        @NotBlank(message = "El nombre completo es obligatorio")
-        @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
-        @Pattern(regexp = "^[a-zA-ZáéíóúñÑüÜ\\s]+$", message = "El nombre solo puede contener letras y espacios")
-        private String fullName;
+    @NotBlank(message = "El nombre completo es obligatorio")
+    @Size(min = 2, max = 100, message = "El nombre debe tener entre 2 y 100 caracteres")
+    @Pattern(regexp = "^[a-zA-ZáéíóúñÑüÜ\\s]+$", message = "El nombre solo puede contener letras y espacios")
+    private String fullName;
 
-        @Past(message = "La fecha de nacimiento debe ser pasada")
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-        private LocalDate birthDate;
+    @Past(message = "La fecha de nacimiento debe ser pasada")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate birthDate;
 
-        private String country;
+    private String country;
+    
+    private String city;      // ← NUEVO
 
-        private String avatarUrl;
-    }
-
+    private String avatarUrl;
+}

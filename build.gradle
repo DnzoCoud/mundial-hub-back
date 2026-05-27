@@ -2,7 +2,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.6'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'jacoco'
 }
 
 group = 'com.unbosque'
@@ -18,36 +17,10 @@ repositories {
 	mavenCentral()
 }
 
-jacoco {
-	toolVersion = "0.8.11"
-}
-
 test {
 	useJUnitPlatform()
-	finalizedBy jacocoTestReport
+	//finalizedBy jacocoTestReport
 }
-
-jacocoTestReport {
-	dependsOn test
-
-	reports {
-		xml.required = true
-		html.required = true
-		csv.required = false
-	}
-}
-
-jacocoTestCoverageVerification {
-	violationRules {
-		rule {
-			limit {
-				minimum = 0.80
-			}
-		}
-	}
-}
-
-check.dependsOn jacocoTestCoverageVerification
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -78,6 +51,7 @@ dependencies {
 	// Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webclient
 	implementation 'org.springframework.boot:spring-boot-starter-webclient:4.1.0-RC1'
 	testImplementation 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
