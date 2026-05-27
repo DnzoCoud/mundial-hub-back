@@ -24,4 +24,8 @@ public class PreferenceEntity {
     private UUID prefId;
     private String category;
     private String value;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 }
