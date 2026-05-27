@@ -22,7 +22,7 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, UUID> {
             UUID groupId
     );
 
-    boolean existsByUserIdAndGroupId(
+    boolean existsByUser_IdAndGroup_Id(
             UUID userId,
             UUID groupId
     );

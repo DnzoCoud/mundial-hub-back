@@ -205,7 +205,7 @@ public class GroupService {
                 .orElseThrow(() -> new NotFoundException("Invalid invite token"));
 
         boolean alreadyExists = userGroupRepository
-                .existsByUserIdAndGroupId(
+                .existsByUser_IdAndGroup_Id(
                         userId,
                         group.getId()
                 );
