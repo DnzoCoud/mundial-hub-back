@@ -13,7 +13,7 @@ public interface PoolRepository extends JpaRepository<PoolEntity, UUID> {
     @Query("""
         SELECT DISTINCT p
         FROM PoolEntity p
-        JOIN FETCH p.startsAt
+        JOIN FETCH p.group
         JOIN UserPoolEntity pm ON pm.pool.id = p.id
         WHERE pm.user.id = :userId
     """)
@@ -22,7 +22,7 @@ public interface PoolRepository extends JpaRepository<PoolEntity, UUID> {
     @Query("""
         SELECT p
         FROM PoolEntity p
-        JOIN FETCH p.startsAt
+        JOIN FETCH p.group
         WHERE p.id = :poolId
     """)
     Optional<PoolEntity> findByIdWithCreator(UUID poolId);
