@@ -6,4 +6,6 @@ public final class TableNames {
     public static final String PREFERENCE = "preference";
     public static final String GROUP = "groups";
     public static final String USER_GROUP = "user_group";
+    public static final String POOL = "pool";
+    public static final String USER_POOL = "user_pool";
 }

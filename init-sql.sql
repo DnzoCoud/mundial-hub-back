@@ -66,19 +66,12 @@ CREATE TABLE user_pool (
      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
      pool_id UUID NOT NULL,
      user_id UUID NOT NULL,
-     role TEXT NOT NULL,
      joined_at TIMESTAMPTZ DEFAULT now(),
+     total_points INT DEFAULT 0,
 
      FOREIGN KEY (pool_id) REFERENCES pool(id) ON DELETE CASCADE,
      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
      UNIQUE(pool_id, user_id)
-);
-
-CREATE TABLE ranking (
-     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-     position INT,
-     pool_id UUID,
-     FOREIGN KEY (pool_id) REFERENCES pool(id)
 );
 
 CREATE TABLE team (
@@ -131,15 +124,26 @@ CREATE TABLE match_event (
 
 CREATE TABLE prediction (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    predicted_score TEXT,
-    created_at TIMESTAMPTZ DEFAULT now(),
+    pool_id UUID NOT NULL,
     user_id UUID NOT NULL,
     match_id UUID NOT NULL,
+
+    home_score INT NOT NULL,
+    away_score INT NOT NULL,
+
+    points_earned INT DEFAULT 0,
+
+    created_at TIMESTAMPTZ DEFAULT now(),
+    updated_at TIMESTAMPTZ DEFAULT now(),
+
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (match_id) REFERENCES match(id)
+    FOREIGN KEY (match_id) REFERENCES match(id),
+
+    UNIQUE(pool_id, user_id, match_id)
 );
 
 CREATE INDEX idx_prediction_user ON prediction(user_id);
+CREATE INDEX idx_prediction_pool ON prediction(pool_id);
 CREATE INDEX idx_prediction_match ON prediction(match_id);
 
 CREATE TABLE sticker_pack (
@@ -351,11 +355,6 @@ CREATE TYPE group_role AS ENUM (
     'MEMBER'
 );
 
-CREATE TYPE pool_role AS ENUM (
-    'ADMIN',
-    'PLAYER'
-);
-
 ALTER TABLE users
 ALTER COLUMN role TYPE user_role
 USING role::user_role;
@@ -363,10 +362,6 @@ USING role::user_role;
 ALTER TABLE user_group
 ALTER COLUMN role TYPE group_role
 USING role::group_role;
-
-ALTER TABLE user_pool
-ALTER COLUMN role TYPE pool_role
-USING role::pool_role;
 
 ALTER TABLE "group"
     ADD COLUMN invite_token VARCHAR(100) NULL;
