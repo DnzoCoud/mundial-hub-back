@@ -19,11 +19,12 @@ public interface GroupRepository extends JpaRepository<GroupEntity, UUID> {
     Optional<GroupEntity> findByIdWithUsers(UUID id);
 
     @Query("""
-        SELECT g
+        SELECT DISTINCT g
         FROM GroupEntity g
+        JOIN g.users filterUg
         LEFT JOIN FETCH g.users ug
         LEFT JOIN FETCH ug.user
-        WHERE ug.user.id = :userId
+        WHERE filterUg.user.id = :userId
     """)
     List<GroupEntity> findAllWithUsers(UUID userId);
 
